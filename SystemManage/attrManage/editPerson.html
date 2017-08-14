@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加部门</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="../../css/global.css" media="all">
+    <link rel="stylesheet" href="../../css/webuploader.css">
+</head>
+<body>
+<div style="margin: 15px;">
+    <fieldset class="layui-elem-field">
+        <legend></legend>
+        <div class="layui-field-box">
+            <form class="layui-form" action="" id="serviceIndex">
+                <table class="layui-table">
+                    <tr>
+                        <th class="self-form-title">部门图标：<span class="wenzism">(图片比例16:9)</span></th>
+                        <td>
+                            <div class="site-demo-upload">
+                                <img id="LAY_demo_upload" src="">
+                                <div class="site-demo-upbar">
+                                    <input name="file" class="layui-upload-file self-layui-upload-file" id="test"
+                                           type="file">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th id="itemsname">部门名称：</th>
+                        <td>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" lay-verify="required" autocomplete="off"
+                                       placeholder="请输入部门名称" class="layui-input self-form-input">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>编号：</th>
+                        <td>
+                            <div class="layui-input-inline">
+                                <input type="text" name="number" lay-verify="required|number" autocomplete="off"
+                                       placeholder="请输入编号" class="layui-input self-form-input">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>描述：</th>
+                        <td>
+                            <div class="layui-input-inline">
+                                <textarea placeholder="请输入描述" name="note" class="layui-textarea" lay-verify=""
+                                          style="width:300px"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="layui-btn-group self-btn-return">
+                    <button class="layui-btn" lay-submit="" lay-filter="formtable">保存</button>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+</div>
+<script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/config.js"></script>
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common', 'formInStorage'], function () {
+        var form = layui.form(),
+                layer = layui.layer,
+                layedit = layui.layedit,
+                laydate = layui.laydate,
+                $ = layui.jquery,
+                laytpl = layui.laytpl,
+                element = layui.element(), //Tab的切换功能，切换事件监听等，需要依赖element模块
+                laypage = layui.laypage,
+                common = layui.common,
+                formInStorage = layui.formInStorage,
+                apiUrl = common.apiUrl,
+                editIndex = layedit.build('LAY_demo_editor'), //创建一个编辑器
+                serviceIndex = localStorage.getItem('serviceIndex'),
+                mody = common.getUrlParam("mody"),
+                typeid = common.getUrlParam("typeid"),
+                areaid = common.getUrlParam("areaid"),
+                layer = layui.layer;
+        common.saveTabIndex('serviceIndex');
+        //common.init();
+        common.layTime(); //时间选择
+
+        //避免input被刷新清空
+        formInStorage.init({
+            formElem: '#serviceIndex',
+            formSession: 'serviceIndex'
+        });
+
+
+        console.log(localStorage.getItem("attrmanagerDetail"));
+
+        //给标题赋值
+
+            if(typeid=='0'){
+                $("legend").html("添加部门");
+                $(".self-form-title").html('部门图标');
+                $('#itemsname').html('部门名称');
+            }
+            if(typeid=='1'){
+                $("legend").html("添加主题");
+                $(".self-form-title").html('主题图标');
+                $('#itemsname').html('主题名称');
+            }
+            if (mody && mody=='0') {
+                $("legend").html("编辑部门");
+                $(".self-form-title").html('部门图标');
+                $('#itemsname').html('部门名称');
+            }
+             if (mody && mody=='1') {
+                $("legend").html("编辑主题");
+                $(".self-form-title").html('主题图标');
+                $('#itemsname').html('主题名称');
+            }
+
+        //给编辑框负值
+        var arr = JSON.parse(localStorage.getItem("attrmanagerDetail"));
+        if(arr){
+            $("#LAY_demo_upload").attr("src", arr.imgguid);
+            $("input[name='name']").attr("value", arr.name);
+            $("input[name='number']").attr("value", arr.number)
+            $("textarea[name='note']").html(arr.note);
+            var orderID = arr.orderid;
+        }
+
+        //自定义验证规则
+        form.verify({
+            number: [/^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,12}$/, '编号必须6到12位的数字+字符']
+        });
+
+
+        console.log(localStorage);
+
+        //监听提交
+        form.on('submit(formtable)', function (data) {
+            //请求接口
+            if (orderID != null) {
+                if(mody==0){
+                    var dataArr = {
+                        "departmentid": orderID,
+                        "imgguid": 'fdsf555#&&fdd',
+                        "name": data.field.name,
+                        "number": data.field.number,
+                        "remark": data.field.note,
+                        "areaid":areaid
+                    };
+                }else{
+                    var dataArr = {
+                        "themeid": orderID,
+                        "imgguid": 'fdsf555#&&fdd',
+                        "name": data.field.name,
+                        "number": data.field.number,
+                        "remark": data.field.note
+                    };
+                }
+            } else {
+                if(mody==0){
+                    var dataArr = {
+                        "departmentid": 0,
+                        "imgguid": 'fdsf555#&&fdd',
+                        "name": data.field.name,
+                        "number": data.field.number,
+                        "remark": data.field.note,
+                        "areaid":areaid
+                    };
+                }else{
+                    var dataArr = {
+                        "themeid": 0,
+                        "imgguid": 'fdsf555#&&fdd',
+                        "name": data.field.name,
+                        "number": data.field.number,
+                        "remark": data.field.note
+                    };
+                }
+            }
+            //return false;
+            if(mody==0 || typeid==0){
+                var getJSON = common.getJsonData('api/bossApi/property/departmentEdit', '', dataArr);
+            }else if(mody==2){
+                var getJSON = common.getJsonData('api/bossApi/property/themeEdit', '', dataArr);
+            }else{
+                //判断名称编号唯一性
+                var getGS = common.getJsonData('api/bossApi/property/themeNameCount', '', {"text":data.field.name});
+                if(getGS.data>0){
+                    layer.msg('主题名称已存在');
+                    return false;
+                }
+                var getGS = common.getJsonData('api/bossApi/property/themeCodeCount', '', {"text":data.field.number});
+                if(getGS.data>0){
+                    layer.msg('主题编号已存在');
+                    return false;
+                }
+                var getJSON = common.getJsonData('api/bossApi/property/themeEdit', '', dataArr);
+            }
+
+
+         // console.log(dataArr);
+          //  console.log(mody);
+          // return false;
+
+            if (getJSON["code"] == 1) {
+                layer.msg('操作成功', {icon: 1, time: 1500}, function () {
+                    localStorage.removeItem("serviceIndex");
+                    localStorage.removeItem("attrmanagerDetail");
+
+                    /*
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                    window.parent.location.reload();
+                    */
+                    history.go(-1);
+                });
+            } else {
+                layer.msg(getJSON["msg"], {icon: 2, time: 1500}, function () {
+                    history.go(-1);
+                });
+            }
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

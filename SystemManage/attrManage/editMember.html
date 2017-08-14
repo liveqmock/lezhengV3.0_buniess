@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加部门</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="../../css/global.css" media="all">
+    <link rel="stylesheet" href="../../css/webuploader.css">
+</head>
+<body>
+<div style="margin: 15px;">
+    <fieldset class="layui-elem-field">
+        <legend></legend>
+        <div class="layui-field-box">
+            <form class="layui-form" action="" id="serviceIndex">
+                <table class="layui-table">
+                    <tr>
+                        <th class="self-form-title">级别：</th>
+                        <td><span id="level"></span>级</td>
+                    </tr>
+                    <tr>
+                        <th class="self-form-title">图标：<span class="wenzism">(图片比例16:9)</span></th>
+                        <td>
+                            <div class="site-demo-upload">
+                                <img id="LAY_demo_upload" src="../../images/upimg.png">
+
+                                <div class="site-demo-upbar">
+                                    <input name="file" class="layui-upload-file self-layui-upload-file" id="test"
+                                           type="file">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th id="itemsname">名称：</th>
+                        <td>
+                            <div class="layui-input-inline">
+                                <input type="text" name="title" lay-verify="required" autocomplete="off"
+                                       placeholder="请输入名称" class="layui-input self-form-input">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>所需积分：</th>
+                        <td>
+                            <div class="layui-input-inline">
+                                <input type="text" name="growthvalue" lay-verify="required" autocomplete="off"
+                                       placeholder="请输入所需积分" class="layui-input self-form-input">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="self-btn-return">
+                    <button class="layui-btn layui-btn-big" lay-submit="" lay-filter="demo1"><i class="fa fa-reply"
+                                                                                                data-icon="fa-reply"
+                                                                                                aria-hidden="true"></i>
+                        保存
+                    </button>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+</div>
+<script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/config.js"></script>
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common', 'formInStorage'], function () {
+        var form = layui.form(),
+                layer = layui.layer,
+                layedit = layui.layedit,
+                laydate = layui.laydate,
+                $ = layui.jquery,
+                laytpl = layui.laytpl,
+                element = layui.element(), //Tab的切换功能，切换事件监听等，需要依赖element模块
+                laypage = layui.laypage,
+                common = layui.common,
+                formInStorage = layui.formInStorage,
+                apiUrl = common.apiUrl,
+                editIndex = layedit.build('LAY_demo_editor'), //创建一个编辑器
+                serviceIndex = localStorage.getItem('serviceIndex'),
+                mody = common.getUrlParam("mody"),
+                layer = layui.layer;
+        common.saveTabIndex('serviceIndex');
+        //common.init();
+        common.layTime(); //时间选择
+
+        //避免input被刷新清空
+        formInStorage.init({
+            formElem: '#serviceIndex',
+            formSession: 'serviceIndex'
+        });
+
+        console.log(localStorage.getItem("attrmanagerDetail"));
+
+        //给标题赋值
+        if (mody) {
+            $("legend").html("编辑会员");
+        } else {
+            $("legend").html("添加会员");
+        }
+
+        //给编辑框负值
+        var arr = JSON.parse(localStorage.getItem("attrmanagerDetail"));
+        if(arr){
+            $("#LAY_demo_upload").attr("src", arr.imgguid);
+            $("#level").html(arr.orderid);
+            $("input[name='title']").attr("value", arr.name);
+            $("input[name='growthvalue']").attr("value", arr.note);
+
+            var orderID = arr.param6;
+        }
+
+        //监听提交
+        form.on('submit(demo1)', function (data) {
+            //请求接口
+            var level = $("#level").html();
+            if (orderID != null) {
+                var dataArr = {
+                    "memberid": orderID,
+                    "level": level,
+                    "levelname": data.field.title,
+                    "imgGuid": 'imgeguid',
+                    "growthvalue": data.field.growthvalue
+                };
+            } else {
+                var dataArr = {
+                    "memberid": 0,
+                    "level": 1,
+                    "levelname": data.field.title,
+                    "imgGuid": 'imgeguid',
+                    "growthvalue": data.field.growthvalue
+                };
+            }
+             console.log(dataArr);
+            //  console.log(mody);
+            // return false;
+            var getJSON = common.getJsonData('api/bossApi/property/memberEdit', '', dataArr);
+            if (getJSON["code"] == 1) {
+                layer.msg('操作成功', {icon: 1, time: 1500}, function () {
+                    localStorage.removeItem("attrmanagerDetail");
+                    localStorage.removeItem("serviceIndex");
+                    window.parent.location.reload();
+                });
+            } else {
+                layer.msg(getJSON["msg"], {icon: 2, time: 1500}, function () {
+                    history.go(-1);
+                });
+            }
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

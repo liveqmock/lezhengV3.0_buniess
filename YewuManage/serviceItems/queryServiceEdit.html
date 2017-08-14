@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>查询服务</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all"/>
+        <link rel="stylesheet" href="../../css/global.css" media="all">
+        <link rel="stylesheet" href="../../css/webuploader.css">
+
+    </head>
+    <body>
+        <div style="margin: 15px;">
+            <fieldset class="layui-elem-field">
+                <legend></legend>
+                <div class="layui-field-box">
+                    <form class="layui-form" action="">
+                        <table class="layui-table">
+                            <tr>
+                                <th class="self-form-title">事项图标：</th>
+                                <td>
+                                    <!--<div class="site-demo-upload">-->
+                                    <!--<img id="LAY_demo_upload" src="../../images/upimg.png">-->
+                                    <!--<div class="site-demo-upbar">-->
+                                    <!--<input name="file" class="layui-upload-file self-layui-upload-file" id="test" type="file">-->
+                                    <!--</div>-->
+                                    <!--</div>-->
+                                    <div id="filePicker-demo">
+                                        <!--用来存放item-->
+                                        <div id="fileList" class="uploader-list"></div>
+                                        <div id="filePicker">选择图片</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="self-form-title">事项名称：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="title" lay-verify="required" autocomplete="off"
+                                               placeholder="请输入事项名称" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>事项编号：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="itemcode" lay-verify="required" autocomplete="off"
+                                               placeholder="请输入事项编号" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>服务大类：</th>
+                                <td>
+                                    <div class="layui-input-inline self-form-input" id="servicetypelist">
+                                        <select name="servicetype">
+                                            <option value="">—— 请选择 ——</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="self-form-title">推送版本：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input name="version" lay-skin="primary" title="所有用户" type="checkbox" value="0,1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="self-form-title">推送标签：</th>
+                                <td>
+                                    <div class="layui-input-inline" id="tags">
+                                        <input name="" lay-skin="primary" title="全选" type="checkbox" lay-filter="allChoose">&nbsp;
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>网址链接：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="website" lay-verify="required" autocomplete="off"
+                                               placeholder="请输入网址链接" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="layui-input-block self-btn-return">
+                            <button class="layui-btn" lay-submit="" lay-filter="addQuerySerice">保存</button>
+                        </div>
+                    </form>
+
+                </div>
+            </fieldset>
+        </div>
+        <script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+        <script type="text/javascript" src="../../js/config.js"></script>
+        <script src="https://cdn.bootcss.com/jquery/1.12.1/jquery.min.js"></script>
+        <script type="text/javascript" src="../../js/webuploader.min.js"></script>
+        <script>
+            layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common'], function () {
+                var form = layui.form(),
+                        layer = layui.layer,
+                        layedit = layui.layedit,
+                        laydate = layui.laydate,
+                        $ = layui.jquery,
+                        laytpl = layui.laytpl,
+                        element = layui.element(), //Tab的切换功能，切换事件监听等，需要依赖element模块
+                        laypage = layui.laypage,
+                        common = layui.common,
+                        apiUrl = common.apiUrl,
+                        editIndex = layedit.build('LAY_demo_editor'), //创建一个编辑器
+                        serviceIndex = localStorage.getItem('serviceIndex'),
+                        orderID = common.getUrlParam("id"),
+                        layer = layui.layer;
+                common.saveTabIndex('serviceIndex');
+                //common.init();
+                //common.layTime(); //时间选择
+
+                 //全选
+                form.on('checkbox(allChoose)', function(data){
+                    var child = $(data.elem).parents('table').find('#tags input');
+                    child.each(function(index, item){
+                      item.checked = data.elem.checked;
+                    });
+                    form.render('checkbox');
+                });
+
+                //服务大类下拉列表
+                var APIname = "api/bossApi/service/serviceTypeList";
+                var getJSON = common.getJsonData(APIname, '', '');
+                $.each(getJSON.datalist, function (index, item) {
+                    $("#servicetypelist select").append('<option value="' + item.id + '">' + item.title + '</option>');
+                    $("#servicetypelist select").next().find(".layui-anim-upbit").append('<dd lay-value="' + item.id + '" class="">' + item.title + '</dd>');
+                });
+                //标签列表
+                var APIname = "api/bossApi/property/tagList";
+                var getJSON = common.getJsonData(APIname, '', '');
+                $.each(getJSON.data, function (index, item) {
+                    $("#tags").append('<input name="'+item.name+'" lay-skin="primary" title="'+item.name+'" datastorage="tags" type="checkbox" fid="'+item.tagsid+'">');
+                });
+                form.render();
+
+                if (orderID != null) {
+                    $("legend").html('编辑查询服务');
+                    var APItitle = "api/bossApi/service/queryServiceDetail";
+                    var dataArr = {"id": orderID};
+                    var getJSON = common.getJsonData(APItitle, '', dataArr);
+                    $("input[name='title']").attr("value", getJSON.data.title);
+                    $("input[name='itemcode']").attr("value", getJSON.data.code);
+                    $("input[name='theme']").attr("value", getJSON.data.theme);
+                    $("input[name='website']").attr("value", getJSON.data.website);
+                    //选中相应的服务大类
+                    var dd = $("#servicetypelist dd[lay-value='"+getJSON.data.id+"']");
+                    $("#servicetypelist input").attr("placeholder",dd.html());
+                    $("#servicetypelist option[value="+getJSON.data.id+"]").attr("selected","selected");
+                    //选中标签
+                    for(var i = 0;i<getJSON.data.tags.length;i++){
+                        $("#tags input[fid='" + getJSON.data.tags[i] + "']").next().addClass("layui-form-checked");
+                        $("#tags input[fid='" + getJSON.data.tags[i] + "']").attr("checked","checked");
+                    }
+                }else{
+                    $("legend").html('新建查询服务');
+                }
+
+                //                //图片上传
+                //                layui.upload({
+                //                  url: 'http://221.10.2.222:5680/api/wx/Files?filetypekey=W3siZGVzYyI6ICIiLCJtb2R1bGUiOjEwMDYsInJlbGF0ZWlkIjowLCJyZW1hcmsiOiAiIiwic2l6ZSI6ICIiLCAidGltZSI6ICIifV0='//上传接口
+                //                  ,success: function(res){ //上传成功后的回调
+                //                    console.log(res);
+                //                  }
+                //                });
+
+                //自定义验证规则
+                form.verify({
+                    buzhou: function (value) {
+                        if (value.length < 5) {
+                            return '请选择步骤';
+                        }
+                    },
+                    content: function (value) {
+                        layedit.sync(editIndex);
+                        var contentvalue = layedit.getContent(editIndex);
+                        if (contentvalue.length < 5) {
+                            return '内容不能为空且不小于5';
+                        }
+                    }
+                });
+
+                var uploader = WebUploader.create({
+
+                    // 选完文件后，是否自动上传。
+                    auto: true,
+
+                    // swf文件路径
+                    swf: '../../js/Uploader.swf',
+
+                    // 文件接收服务端。
+                    server: '',
+
+                    // 选择文件的按钮。可选。
+                    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                    pick: '#filePicker',
+
+                    // 只允许选择图片文件。
+                    accept: {
+                        title: 'Images',
+                        extensions: 'gif,jpg,jpeg,bmp,png',
+                        mimeTypes: 'image/*'
+                    }
+                });
+
+                uploader.on('fileQueued', function (file) {
+                    var $li = $(
+                            '<div id="' + file.id + '" class="file-item thumbnail">' +
+                            '<img>' +
+                            '<div class="info">' + file.name + '</div>' +
+                            '</div>'
+                            ),
+                            $img = $li.find('img');
+
+                    console.log(file)
+                    console.log(uploader)
+                    // $list为容器jQuery实例
+                    $('#fileList').html($li);
+
+                    // 创建缩略图
+                    // 如果为非图片文件，可以不用调用此方法。
+                    // thumbnailWidth x thumbnailHeight 为 100 x 100
+                    uploader.makeThumb(file, function (error, src) {
+                        if (error) {
+                            $img.replaceWith('<span>不能预览</span>');
+                            return;
+                        }
+
+                        $img.attr('src', src);
+                    }, '100', '100');
+                });
+
+                // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+                uploader.on('uploadSuccess', function (file) {
+                    $('#' + file.id).addClass('upload-state-done');
+                });
+
+                // 文件上传失败，显示上传出错。
+                uploader.on('uploadError', function (file, reason) {
+                    var $li = $('#' + file.id),
+                            $error = $li.find('div.error');
+
+                    // 避免重复创建
+                    if (!$error.length) {
+                        $error = $('<div class="error"></div>').appendTo($li);
+                    }
+                    console.log(reason);
+                    $error.text('上传失败');
+                });
+
+                uploader.on('error', function (type) {
+                    if (type = 'Q_EXCEED_SIZE_LIMIT') {
+                        layer.msg('文件大小超出限制')
+                    }
+                });
+
+                //监听提交
+                form.on('submit(addQuerySerice)', function (data) {
+                    var APIname = 'api/bossApi/service/queryServiceEdit';
+                    var tags = $("#tags").find(".layui-form-checked").length; //是否选择了标签
+                    $("#tags").css("border","0");
+                    if(tags==0){
+                        $("#tags").css("border","1px solid red");
+                        layer.msg('必填项不能为空！',{icon:5,shift:6 });
+                        return false;
+                    }
+                    var tags = "";
+                    $('input[datastorage="tags"]:checked').each(function(){ //当前选中的复选框
+                       tags += $(this).attr('fid') + ",";
+                    });
+                    tags = tags.substring(0,tags.length-1); // '1,2,'去掉最后一个逗号
+
+                    if (orderID != null) {
+                        var dataArr = {
+                            "id": orderID,
+                            "picurls": data.field.picurls,
+                            "title": data.field.title,
+                            "code": data.field.itemcode,
+                            "servicetypeid": data.field.servicetype,
+                            "version": data.field.version,
+                            "tags": tags,
+                            "website": data.field.website
+                        };
+                    }else{
+                        var dataArr = {
+                            "picurls": data.field.picurls,
+                            "title": data.field.title,
+                            "code": data.field.itemcode,
+                            "servicetypeid": data.field.servicetype,
+                            "version": data.field.version,
+                            "tags": tags,
+                            "website": data.field.website
+                        };
+                    }
+                    //console.log(dataArr);
+                    //return false;
+                    var getJSON = common.getJsonData(APIname, '', dataArr);
+                    if(getJSON["code"] == 1){
+                        layer.msg('操作成功', {icon:1, time:1500},function(){
+                            history.go(-1);
+                        });
+                    }
+                    return false;
+                });
+
+            });
+        </script>
+    </body>
+</html>

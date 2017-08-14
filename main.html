@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="css/global.css" media="all">
+    <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css"/>
+    <style>
+        .col-lg-2 {
+            width: 16.66666667%;
+            float: left;
+        }
+
+        .main-top-item {
+            padding: 20px;
+            margin: 15px;
+            height: 60px;
+            background: #009688;
+        }
+
+        .main-top-item .row {
+            text-align: center;
+            height: 30px;
+            line-height: 30px;
+            color: #fff;
+        }
+
+        .main-top-item .row i {
+            font-size: 20px;
+        }
+
+        .main-top-item .row span {
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="clear">
+    <div class="col-lg-2">
+        <a href="OrdersManage/ordersHandle/index.html">
+            <div class="main-top-item">
+                <div class="row">
+                    <i class="fa fa-folder-open-o"></i>
+                </div>
+                <div class="row">
+                    <span>订单处理</span>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-2">
+        <a href="OrdersManage/ordersQuery/index.html">
+            <div class="main-top-item">
+                <div class="row">
+                    <i class="fa fa-search"></i>
+                </div>
+                <div class="row">
+                    <span>订单查询</span>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-2">
+        <a href="FinanceManage/financeManage/index.html">
+            <div class="main-top-item">
+                <div class="row">
+                    <i class="fa fa-calculator"></i>
+                </div>
+                <div class="row">
+                    <span>财务管理</span>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-2">
+        <a href="yewumanage/businessManage/detail.html">
+            <div class="main-top-item">
+                <div class="row">
+                    <i class="fa fa-folder-o"></i>
+                </div>
+                <div class="row">
+                    <span>企业档案</span>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-2">
+        <a href="systemmanage/rolemanage/index.html">
+            <div class="main-top-item">
+                <div class="row">
+                    <i class="fa fa-user-plus"></i>
+                </div>
+                <div class="row">
+                    <span>员工管理</span>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-2">
+        <a href="systemmanage/logmanage/index.html">
+            <div class="main-top-item">
+                <div class="row">
+                    <i class="fa fa-file-code-o"></i>
+                </div>
+                <div class="row">
+                    <span>日志管理</span>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="layui-field-box">
+    <table class="site-table table-hover">
+        <thead>
+        <tr>
+            <th colspan="6" style="text-align:left">系统公告</th>
+        </tr>
+        </thead>
+        <tbody id="items-list1"></tbody>
+    </table>
+    <div class="admin-table-page">
+        <div id="page1" class="page"></div>
+    </div>
+</div>
+<!---内容-->
+<script id="orderHandle1" type="text/html">
+    <table class="site-table table-hover" id="targetTable">
+        <thead>
+        <tr>
+            <th>流水号</th>
+            <th>时间</th>
+            <th>操作类型</th>
+            <th>关联对象</th>
+            <th>操作员</th>
+            <th>具体动作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{# layui.each(d.datalist, function(index, item){ }}
+        <tr>
+            <td>{{ item.serialnumber }}</td>
+            <td>{{ item.createtime }}</td>
+            <td>{{ item.operationtype }}</td>
+            <td>{{ item.objectid }}</td>
+            <td>{{ item.staffname }}</td>
+            <td title="{{ item.remark }}">{{ item.remark.length>30?item.remark.substring(0, 30)+ "...":item.remark }}
+            </td>
+        </tr>
+        {{# }); }}
+        </tbody>
+    </table>
+</script>
+
+<script type="text/javascript" src="./plugins/layui/layui.js"></script>
+<script type="text/javascript" src="./js/config.js"></script>
+
+<script>
+    //搜索表单
+    layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common', 'formInStorage'], function () {
+        var form = layui.form(),
+                layer = layui.layer,
+                layedit = layui.layedit,
+                laydate = layui.laydate,
+                $ = layui.jquery,
+                laytpl = layui.laytpl,
+                element = layui.element(), //Tab的切换功能，切换事件监听等，需要依赖element模块
+                laypage = layui.laypage,
+                common = layui.common,
+                formInStorage = layui.formInStorage,
+                apiUrl = common.apiUrl,
+                editIndex = layedit.build('LAY_demo_editor'), //创建一个编辑器
+                orderID = common.getUrlParam("id"),
+                layer = layui.layer;
+        common.init();
+        common.saveTabIndex('attrManage');
+        common.layTime(); //时间选择
+        common.getJsonData('api/bossApi/log/logSearch', 1, {"page": 1});
+
+    });
+</script>
+</body>
+</html>

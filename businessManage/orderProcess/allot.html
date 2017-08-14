@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>订单处理</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all" />
+  <link rel="stylesheet" href="../../css/global.css" media="all">
+  <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="../../css/table.css" />
+  <style>
+    .layui-form-item .layui-input-inline {
+      width: 170px;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="margin: 15px;">
+    <div class="layui-tab layui-tab-card">
+      <div class="layui-tab-content">
+        <div class="admin-main">
+          <blockquote class="layui-elem-quote">
+            <form class="layui-form" action="">
+              <div class="layui-form-item">
+                <label class="layui-form-label">订单来源</label>
+                <div class="layui-input-inline">
+                  <select name="status">
+																		<option value="">—— 请选择 ——</option>
+																		<option value="已上线">已上线</option>
+																		<option value="未上线">未上线</option>
+																</select>
+                </div>
+                <label class="layui-form-label">星级区域</label>
+                <div class="layui-input-inline">
+                  <select name="status">
+																		<option value="">—— 请选择 ——</option>
+																		<option value="已上线">已上线</option>
+																		<option value="未上线">未上线</option>
+																</select>
+                </div>
+                <label class="layui-form-label">接单量区域</label>
+                <div class="layui-input-inline">
+                  <select name="status">
+																		<option value="">—— 请选择 ——</option>
+																		<option value="已上线">已上线</option>
+																		<option value="未上线">未上线</option>
+																</select>
+                </div>
+                <label class="layui-form-label">关键字搜索</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder=" 请输入关键字搜索" class="layui-input">
+                </div>
+                <button class="layui-btn pull-right" lay-submit="" lay-filter="sear">搜索</button>
+              </div>
+            </form>
+          </blockquote>
+        </div>
+
+        <!--派单列表-->
+        <div class="layui-tab-item layui-show">
+          <div class="layui-field-box">
+            <table class="site-table table-hover">
+              <thead>
+                <tr>
+                  <th>商家编号</th>
+                  <th>商家名</th>
+                  <th>联系人</th>
+                  <th>联系电话</th>
+                  <th>工商登记号</th>
+                  <th>接单量</th>
+                  <th>星级</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="items-list1"></tbody>
+            </table>
+            <div class="admin-table-page">
+              <div id="page1" class="page"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--派单列表-->
+  <script id="ordersHandle1" type="text/html">
+    {{# layui.each(d.datalist, function(index, item){ }}
+    <tr id="order4">
+      <td>{{ item.id }}</td>
+      <td>{{ item.title }}</td>
+      <td>{{ item.person }}</td>
+      <td>{{ item.person }}</td>
+      <td>{{ item.person }}</td>
+      <td>{{ item.date }}</td>
+      <td>{{ item.states }}</td>
+      <td>
+        <a href="javascript:;" class="js_choose">选择</a>
+      </td>
+    </tr>
+    {{# }); }}
+  </script>
+  <script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+  <script type="text/javascript" src="../../js/config.js"></script>
+  <script>
+    layui.config({
+      base: '../../plugins/layui/lay/modules/'
+    });
+    //搜索表单
+    layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common'], function() {
+      var $ = layui.jquery,
+        form = layui.form(),
+        layedit = layui.layedit,
+        laydate = layui.laydate,
+        laytpl = layui.laytpl,
+        element = layui.element(),
+        laypage = layui.laypage,
+        layer = layui.layer;
+
+      var orderData = {
+        datalist: [{
+          id: '1',
+          title: 'aaaaa',
+          person: 'xiaowang',
+          date: '2017-04-20 14:12:23',
+          states: 'ok'
+        }, {
+          id: '2',
+          title: 'aaaaa',
+          person: 'xiaowang',
+          date: '2017-04-20 14:12:23',
+          states: 'ok'
+        }, {
+          id: '3',
+          title: 'aaaaa',
+          person: 'xiaowang',
+          date: '2017-04-20 14:12:23',
+          states: 'ok'
+        }, {
+          id: '4',
+          title: 'aaaaa',
+          person: 'xiaowang',
+          date: '2017-04-20 14:12:23',
+          states: 'ok'
+        }, {
+          id: '5',
+          title: 'aaaaa',
+          person: 'xiaowang',
+          date: '2017-04-20 14:12:23',
+          states: 'ok'
+        }]
+      };
+
+      function initPage() {
+        console.log(sessionStorage.getItem('tableID'))
+
+        //分页加载数据
+        $('input').iCheck({
+          checkboxClass: 'icheckbox_flat-green'
+        });
+
+        //监听提交
+        form.on('submit(sear)', function(data) {
+          layer.alert(JSON.stringify(data.field));
+          return false;
+        });
+
+        renderTpl(1, orderData)
+      }
+
+      //ajax请求
+      function ajaxFn(typeid, num) {
+        $.ajax({
+          url: "http://221.10.2.222:5680/api/wx/News/ListByType/0/" + typeid + "/1",
+          type: "get",
+          dataType: "json",
+          success: function(data) {
+            renderTpl(typeid, data);
+            laypage({
+              cont: 'page' + num,
+              pages: data.totalpages, //总页数
+              groups: 5, //连续显示分页数
+              skip: true,
+              jump: function(obj, first) {
+                //得到了当前页，用于向服务端请求对应数据
+                if (!first) {
+                  $.ajax({
+                    url: "http://221.10.2.222:5680/api/wx/News/ListByType/0/" + typeid + "/" + obj.curr,
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function(data) {
+                      renderTpl(typeid, data);
+                    }
+                  });
+                }
+              }
+            });
+          }
+        });
+      }
+
+      function renderTpl(i, data) {
+        var tplid = document.getElementById('ordersHandle' + i),
+          viewid = document.getElementById('items-list' + i);
+        var getTpl = tplid.innerHTML;
+        laytpl(getTpl).render(data, function(html) {
+          viewid.innerHTML = html;
+          element.init();
+        });
+      }
+
+      var index = parent.layer.getFrameIndex(window.name);
+      $(document).on('click', '.js_choose', function() {
+        parent.layer.close(index);
+      })
+
+      initPage()
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>订单详情</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="../../css/global.css" media="all">
+    <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+</head>
+
+<body>
+<div style="margin: 15px;">
+    <fieldset class="layui-elem-field">
+        <legend>订单详情</legend>
+        <div class="layui-field-box">
+            <span id="tkxq" style="display:none">
+            <legend>退款信息</legend>
+            <table class="layui-table" id="items-list1">
+            </table>
+           </span>
+
+            <table class="layui-table" id="items-list2">
+            </table>
+            <legend>流程追踪</legend>
+            <table class="layui-table" id="items-list3">
+            </table>
+            <span id="page1" class="page"></span>
+            <span id="page2" class="page"></span>
+            <span id="page3" class="page"></span>
+            <div class="self-btn-return" id="paidan" style="display:none">
+                <button class="layui-btn layui-btn-big" onclick=" history.go(-1)">返回</button>
+                <button class="layui-btn layui-btn-big layui-btn-warm" id="return"><i class="fa fa-send"
+                                                                                      data-icon="fa-send"
+                                                                                      aria-hidden="true"></i> 派单
+                </button>
+            </div>
+            <div class="self-btn-return" id="shensu" style="display:none">
+                <button class="layui-btn layui-btn-big shensu" istakeexplain="true">
+                    同意
+                </button>
+                <button class="layui-btn layui-btn-big layui-btn-warm shensu" istakeexplain="false"><i class="fa fa-send" data-icon="fa-send" aria-hidden="true"></i>
+                    拒绝
+                </button>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<script id="orderHandle1" type="text/html">
+    <tr>
+        <th class="self-form-title">退款金额：</th>
+        <td>￥{{ d.data.amount}}</td>
+    </tr>
+    <tr>
+        <th>账务名称：</th>
+        <td>{{ d.data.username}}</td>
+    </tr>
+    <tr>
+        <th>收款银行：</th>
+        <td>{{ d.data.bankname}}</td>
+    </tr>
+    <tr>
+        <th>收款账号：</th>
+        <td>{{ d.data.banknumber}}</td>
+    </tr>
+    <tr>
+        <th>备注：</th>
+        <td>{{ d.data.reason}}</td>
+    </tr>
+</script>
+<script id="orderHandle2" type="text/html">
+    <tr>
+        <th class="self-form-title">订单状态：</th>
+        <td>{{ d.data.orderstatusname}}</td>
+    </tr>
+    <tr>
+        <th>订单编号：</th>
+        <td>{{ d.data.ordercode}}</td>
+    </tr>
+    <tr>
+        <th>下单时间：</th>
+        <td>{{ d.data.ordertime}}</td>
+    </tr>
+    <tr>
+        <th>服务类型：</th>
+        <td>{{ d.data.servicecode}}</td>
+    </tr>
+    <tr>
+        <th>订单来源：</th>
+        <td>{{# if(d.data.ordersource == '0'){ }}APP{{# }else if(d.data.ordersource == '1'){ }}微信{{# }else
+            if(d.data.ordersource == '2'){ }}业务支撑系统{{# }else{ }}暂无！{{# } }}
+        </td>
+    </tr>
+    <tr>
+        <th>下单人：</th>
+        <td>{{ d.data.username}}</td>
+    </tr>
+    <tr>
+        <th>手机号：</th>
+        <td>{{ d.data.aphonenumber}}</td>
+    </tr>
+    <tr>
+        <th>预约地址：</th>
+        <td>{{ d.data.addressee}}</td>
+    </tr>
+    <tr>
+        <th>预约时间：</th>
+        <td>{{ d.data.begintime}}</td>
+    </tr>
+    <tr>
+        <th>留言内容：</th>
+        <td>{{ d.data.remarks}}</td>
+    </tr>
+</script>
+<script id="orderHandle3" type="text/html">
+    <tr>
+        <th class="self-form-title">1111</th>
+        <td>2222</td>
+    </tr>
+</script>
+<script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/config.js"></script>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common'], function () {
+        var form = layui.form(),
+                layer = layui.layer,
+                layedit = layui.layedit,
+                laydate = layui.laydate,
+                $ = layui.jquery,
+                laytpl = layui.laytpl,
+                element = layui.element(), //Tab的切换功能，切换事件监听等，需要依赖element模块
+                laypage = layui.laypage,
+                common = layui.common,
+                apiUrl = common.apiUrl,
+                editIndex = layedit.build('LAY_demo_editor'), //创建一个编辑器
+                serviceIndex = localStorage.getItem('serviceIndex'),
+                id = common.getUrlParam("id"),
+                chuli = common.getUrlParam("chuli"),
+                wancheng = common.getUrlParam("wancheng"),
+                layer = layui.layer;
+        common.saveTabIndex('serviceIndex');
+        common.init();
+        //common.layTime(); //时间选择
+
+        //获取详情
+        var dataArr = {"id": id}
+        common.getJsonData('api/bossApi/order/ordersDetail', 2, dataArr);
+
+        if(wancheng){
+            $("#tkxq").removeAttr("style");
+            var dataArr = {"id": id}
+            common.getJsonData('api/bossApi/order/ordersPaymentDetail', 1, dataArr);
+        }
+
+        //获取步骤
+        var dataArr = {
+            "userid": 1,
+            "orderid": id
+        }
+        common.getJsonData('api/bossApi/order/ordersteps', 3, dataArr);
+
+        //申述中 --> 处理
+        if(chuli){
+            $("#shensu").removeAttr('style');
+        }
+
+        $(".shensu").on('click',function(){
+            var istakeexplain=$(this).attr('caozuo');
+            var dataArr = {
+                "orderid": id,
+                "istakeexplain": istakeexplain
+            }
+            var getJSON = common.getJsonData('api/bossApi/order/ordersEditExplain', '', dataArr);
+            console.log(dataArr);
+            console.log(getJSON);
+           // return false;
+            if (getJSON["code"] == 1) {
+                layer.msg('操作成功', {icon: 1, time: 1500}, function () {
+                   // localStorage.removeItem("deids");
+                    history.go(-1);
+                });
+            } else {
+                layer.msg(getJSON["msg"], {icon: 2, time: 1500}, function () {
+                    history.go(-1);
+                });
+            }
+            return false;
+            //layer.msg('提交成功')
+            layer.close(index)
+        })
+
+    });
+</script>
+</body>
+</html>

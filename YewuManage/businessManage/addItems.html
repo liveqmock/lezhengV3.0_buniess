@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>添加事项</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all"/>
+        <link rel="stylesheet" href="../../css/global.css" media="all">
+        <link rel="stylesheet" href="../../css/webuploader.css">
+        <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+    </head>
+    <body>
+        <div style="margin: 15px;">
+            <fieldset class="layui-elem-field">
+                <legend></legend>
+                <div class="layui-field-box">
+                    <form class="layui-form" action="" id="addshangjia">
+                        <table class="layui-table">
+                            <tr>
+                                <th class="self-form-title">商家名称：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                               placeholder="请输入商家名称" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>商家编号：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="number" lay-verify="number" autocomplete="off"
+                                               placeholder="请输入商家编号" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>联系人姓名：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="xingming" lay-verify="xingming" autocomplete="off"
+                                               placeholder="请输入联系人姓名" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>联系人电话：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="phone" lay-verify="phone" autocomplete="off"
+                                               placeholder="请输入联系人电话" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>商家地址：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="address" lay-verify="address" autocomplete="off"
+                                               placeholder="请输入商家地址" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>工商登记号：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="Registration" lay-verify="Registration" autocomplete="off"
+                                               placeholder="请输入工商登记号" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>开户行：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="bank" lay-verify="bank" autocomplete="off"
+                                               placeholder="请输入开户行" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>开户账号：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="account" lay-verify="account" autocomplete="off"
+                                               placeholder="请输入开户账号" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr><th>公司简介：</th>
+                                <td>
+                                    <div class="layui-input-block edit_box self-edit-margin">
+                                        <textarea class="layui-textarea layui-hide" name="introduce" lay-verify="content|required" id="LAY_demo_editor"></textarea>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr><th class="self-form-title">商家图片：<span class="wenzism">(图片比例16:9)</span></th>
+                                <td>
+                                    <div class="site-demo-upload">
+                                        <img id="LAY_demo_upload" src="../../images/upimg.png">
+                                        <div class="site-demo-upbar">
+                                          <input name="file" class="layui-upload-file self-layui-upload-file" id="test" type="file">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="layui-btn-group self-btn-return">
+                            <button class="layui-btn" lay-submit="" lay-filter="additems">保存</button>
+                            <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="demo2">上线</button>
+                        </div>
+                    </form>
+                </div>
+            </fieldset>
+        </div>
+        <a href="javascript:history.go(-1);" class="return-go"><i class="fa fa-reply" data-icon="fa-reply" aria-hidden="true"></i></a>
+
+        <script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+        <script type="text/javascript" src="../../js/config.js"></script>
+        <script>
+        layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common', 'formInStorage'], function () {
+            var form = layui.form(),
+                    layer = layui.layer,
+                    layedit = layui.layedit,
+                    laydate = layui.laydate,
+                    $ = layui.jquery,
+                    laytpl = layui.laytpl,
+                    element = layui.element(), //Tab的切换功能，切换事件监听等，需要依赖element模块
+                    laypage = layui.laypage,
+                    common = layui.common,
+                    formInStorage = layui.formInStorage,
+                    apiUrl = common.apiUrl,
+                    editIndex = layedit.build('LAY_demo_editor'), //创建一个编辑器
+                    serviceIndex = localStorage.getItem('serviceIndex'),
+                    orderID = common.getUrlParam("id"),
+                    type = parseInt(common.getUrlParam("type")),
+                    itemID = common.getUrlParam("itemid"),//事项id
+                    layer = layui.layer;
+            common.saveTabIndex('serviceIndex');
+            //common.init();
+            common.layTime(); //时间选择
+
+
+            //避免input被刷新清空
+            formInStorage.init({
+                formElem: '#addshangjia',
+                formSession: 'addshangjia'
+            });
+            $(window.frames["LAY_layedit_1"].document).find("body").on('keyup',function(){
+                var textval = $(window.frames["LAY_layedit_1"].document).find("body").html();
+                localStorage.setItem("textarea",textval);
+            })
+            $(window.frames["LAY_layedit_1"].document).find("body").html(localStorage.getItem("textarea"));
+
+
+
+            //修改的时候
+            if (orderID != null) {
+                //修改时，获取行政审批的详情
+                $("legend").html('编辑企业服务');
+                var APItitle = "api/bossApi/service/businessServiceDetail";
+                var dataArr = {"id": orderID};
+                var getJSON = common.getJsonData(APItitle, '', dataArr);
+                $("input[name='title']").attr("value", getJSON.data.title);
+                $("input[name='itemcode']").attr("value", getJSON.data.code);
+                //选中固定步骤
+                var dd = $("#fixedstep dd[lay-value='"+getJSON.data.fixedstep+"']");
+                $("#fixedstep input").attr("placeholder",dd.html());
+                $("#fixedstep option[value="+getJSON.data.fixedstep+"]").attr("selected","selected");
+                //选中自定义步骤
+                var dd = $("#customstep dd[lay-value='"+getJSON.data.customstep+"']");
+                $("#customstep input").attr("placeholder",dd.html());
+                $("#customstep option[value="+getJSON.data.customstep+"]").attr("selected","selected");
+                //选中相应的事项类型
+                var dd = $("#servicetype dd[lay-value='"+getJSON.data.servicetype+"']");
+                $("#servicetype input").attr("placeholder",dd.html());
+                $("#servicetype option[value="+getJSON.data.servicetype+"]").attr("selected","selected");
+                //选中标签
+                for(var i = 0;i<getJSON.data.tags.length;i++){
+                    $("#tags input[fid='" + getJSON.data.tags[i] + "']").next().addClass("layui-form-checked");
+                    $("#tags input[fid='" + getJSON.data.tags[i] + "']").attr("checked","checked");
+                }
+                //商家列表
+                var ids='';
+                for(var i = 0;i<getJSON.data.serviceproviders.length;i++){
+                    //ids += "getJSON.data.serviceproviders[i].id":"+getJSON.data.serviceproviders[i].name+" + ',';
+                    ids += '"'+ getJSON.data.serviceproviders[i].id+'":"'+getJSON.data.serviceproviders[i].name+'"'+',';
+                }
+                ids = '{'+ids.substring(0,ids.length-1)+'}';
+                localStorage.setItem("ids",ids);//修改ids的值
+
+                window.frames["LAY_layedit_1"].document.body.innerHTML = getJSON.data.guide;//给富文本区域赋值
+            }
+
+            //自定义验证规则
+            form.verify({
+                number: function (value) {
+                    if (/^[\s]{0,}$|^[\w\s]{7,}$/g.test(value)) {
+                        return '产品编号不能为空或空格且不小于6';
+                    }
+                },
+                content: function (value) {
+                    layedit.sync(editIndex);
+                    var contentvalue = layedit.getContent(editIndex);
+                    if (contentvalue.length < 5) {
+                        return '内容不能为空且不小于5';
+                    }
+                }
+            });
+
+
+            //监听提交
+            form.on('submit(additems)', function (data) {
+                //请求接口
+                var guide = $(window.frames["LAY_layedit_1"].document).find("body").html();//获取富文本编辑框的值
+                var APIname = 'api/bossApi/businessMain/businessMainEdit';
+                if (orderID != null) {
+                    var dataArr = {
+                        "businessid": orderID,
+                        "businessname":data.field.title,
+                        "businesscode":data.field.number,
+                        "contacts":data.field.xingming,
+                        "phonenumber":data.field.phone,
+                        "address":data.field.address,
+                        "registrationnum":data.field.Registration,
+                        "bank":data.field.bank,
+                        "bankaccount":data.field.account,
+                        "brief":guide,
+                        "type":type,
+                        "images":"1,2,3"
+                    };
+                }else{
+                    var dataArr = {
+                        "businessid": 0,
+                        "businessname":data.field.title,
+                        "businesscode":data.field.number,
+                        "contacts":data.field.xingming,
+                        "phonenumber":data.field.phone,
+                        "address":data.field.address,
+                        "registrationnum":data.field.Registration,
+                        "bank":data.field.bank,
+                        "bankaccount":data.field.account,
+                        "brief":guide,
+                        "type":type,
+                        "images":"1,2,3"
+                    };
+                }
+
+               console.log(dataArr);
+
+                var getJSON = common.getJsonData(APIname, '', dataArr);
+                return false;
+                if(getJSON["code"] == 1){
+                    layer.msg('操作成功', {icon:1, time:1500},function(){
+                      localStorage.removeItem("addshangjia");
+                      localStorage.removeItem("textarea");
+                      var index = parent.layer.getFrameIndex(window.name);
+                      parent.layer.close(index);
+                      window.parent.location.reload();
+                    });
+                }else{
+                    return false;
+                    layer.msg(getJSON["msg"], {icon:2, time:1500},function(){
+                      history.go(-1);
+                    });
+                }
+                return false;
+            });
+
+
+
+        });
+        </script>
+    </body>
+</html>

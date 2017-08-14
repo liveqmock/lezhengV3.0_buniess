@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>添加员工</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all"/>
+        <link rel="stylesheet" href="../../css/global.css" media="all">
+        <link rel="stylesheet" href="../../css/webuploader.css">
+        <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+    </head>
+    <body>
+        <div style="margin: 15px;">
+            <fieldset class="layui-elem-field">
+                <legend></legend>
+                <div class="layui-field-box">
+                    <form class="layui-form" action="">
+                        <table class="layui-table"> 
+                             <tr><th class="self-form-title">头像：<span class="wenzism">(图片比例16:9)</span></th>
+                                <td>                               
+                                    <div class="site-demo-upload">
+                                        <img id="LAY_demo_upload" src="../../images/upimg.png">
+                                        <div class="site-demo-upbar">
+                                          <input name="file" class="layui-upload-file self-layui-upload-file" id="test" type="file">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>用户名：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                               placeholder="请输入用户名" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>编号：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="number" lay-verify="number" autocomplete="off"
+                                               placeholder="请输入编号" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>姓名：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="xingming" lay-verify="xingming" autocomplete="off"
+                                               placeholder="请输入姓名" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>性别：</th>
+                                <td>                                    
+                                    <input type="radio" name="sex" value="男" title="男">
+                                    <input type="radio" name="sex" value="女" title="女" checked>                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>身份证号：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="idCard" lay-verify="idCard" autocomplete="off"
+                                               placeholder="请输入身份证号" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>手机号：</th>
+                                <td>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="phone" lay-verify="phone" autocomplete="off"
+                                               placeholder="请输入手机号" class="layui-input self-form-input">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>角色：</th>
+                                <td>
+                                    <div class="layui-input-inline self-form-input">                                            
+                                        <select name="role" lay-filter="role">
+                                            <option value="">——— 请选择角色 ———</option>
+                                            <option value="0">专员</option>
+                                            <option value="1">主管</option>
+                                        </select>    
+                                    </div>
+                                </td>
+                            </tr>                           
+                            <tr><th>加入日期：</th>
+                                <td>                               
+                                     <div class="layui-input-inline"> 
+                                        <input name="publishtime" class="layui-input self-form-input" placeholder="请选择日期" onclick="layui.laydate({elem: this, istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                    </div>
+                                </td>
+                            </tr>
+                           
+                        </table>
+                        <div class="layui-btn-group self-btn-return">
+                            <button class="layui-btn" lay-submit="" lay-filter="demo1">保存</button>
+                            <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="demo2">重置密码</button>
+                        </div>
+                    </form>
+                </div>
+            </fieldset>
+        </div>
+        <a href="javascript:history.go(-1);" class="return-go"><i class="fa fa-reply" data-icon="fa-reply" aria-hidden="true"></i> 返回</a>
+        
+        <script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+        <script type="text/javascript" src="../../js/config.js"></script>    
+        <script>
+            layui.use(['form', 'layedit', 'laydate','common', 'upload'], function () {
+                var $ = layui.jquery,
+                        form = layui.form(),
+                        layer = layui.layer,
+                        layedit = layui.layedit,
+                        common = layui.common,                       
+                        laydate = layui.laydate;
+                        
+                //创建一个编辑器
+                var editIndex = layedit.build('LAY_demo_editor');                
+                
+                //给标题赋值             
+                var orderid = common.getUrlParam("id");
+                if (orderid) {
+                    $("legend").html("编辑员工");                   
+                } else {  
+                    $("legend").html("添加员工");                    
+                }
+
+                //非添加的时候就根据id回填信息
+                var orderid = common.getUrlParam("id");
+                if (orderid != null) {
+                    $.ajax({
+                        url: "http://221.10.2.222:5680/api/wx/News/" + orderid + "/0",
+                        type: "get",
+                        dataType: "json",
+                        success: function (data) {
+                            $("input[name='title']").attr("value", data.title);
+                            $("input[name='number']").attr("value", data.id);
+                            $("input[name='publishtime']").attr("value", data.publishtime);
+                            $("#LAY_demo_editor").val(data.content);
+                            
+                            
+                        }
+                    });
+                }
+
+                //                //图片上传
+                //                layui.upload({
+                //                  url: 'http://221.10.2.222:5680/api/wx/Files?filetypekey=W3siZGVzYyI6ICIiLCJtb2R1bGUiOjEwMDYsInJlbGF0ZWlkIjowLCJyZW1hcmsiOiAiIiwic2l6ZSI6ICIiLCAidGltZSI6ICIifV0='//上传接口
+                //                  ,success: function(res){ //上传成功后的回调
+                //                    console.log(res);
+                //                  }
+                //                });
+
+                //自定义验证规则
+                form.verify({
+                    title: function (value) {
+                        if (value.length < 5) {
+                            return '标题不能为空';
+                        }
+                    },
+                    number: function (value) {
+                        if (value.length < 5) {
+                            return '编号不能为空';
+                        }
+                    },
+                    zhuti: function (value) {
+                        if (value.length < 5) {
+                            return '请选择主题';
+                        }
+                    },
+                    buzhou: function (value) {
+                        if (value.length < 5) {
+                            return '请选择步骤';
+                        }
+                    },
+                    content: function (value) {
+                        layedit.sync(editIndex);
+                        var contentvalue = layedit.getContent(editIndex);
+                        if (contentvalue.length < 5) {
+                            return '内容不能为空且不小于5';
+                        }
+                    }
+                });
+                //监听提交
+                form.on('submit(demo1)', function (data) {
+                    layer.alert('提交的数据：' + JSON.stringify(data.field), {});
+                    return false;
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>编辑/添加优惠券</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="../../css/global.css" media="all">
+    <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+    <style>
+        .layui-choose-left {
+            float: left;
+            width: 200px;
+        }
+
+        .layui-colla-content {
+            padding: 0;
+        }
+
+        .layui-colla-content li {
+            width: 163px;
+            height: 35px;
+            line-height: 35px;
+            padding-left: 35px;
+            cursor: pointer;
+        }
+
+        .layui-colla-content li:hover {
+            background: #eee;
+        }
+
+        .layui-colla-content li.active {
+            background: #009e94;
+            color: #fff;
+        }
+
+        .layui-choose-right {
+            margin-left: 220px;
+        }
+
+        .layui-choose-tab {
+            padding: 0 15px;
+        }
+
+        .choosed-title {
+            background: #f2f2f2;
+            font-size: 15px;
+            height: 40px;
+            line-height: 40px;
+            padding-left: 10px;
+            color: #5d5c5c;
+            border: 1px solid #e2e2e2;
+        }
+
+        .choosed-content {
+            border: 1px solid #f2f2f2;
+            border-top: 0;
+            min-height: 50px;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .choosed-item {
+            float: left;
+            margin: 0 15px 10px 0;
+            padding: 0 10px;
+            height: 30px;
+            line-height: 30px;
+            font-size: 16px;
+            color: #5FB878;
+            border: 1px solid #5FB878;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+        }
+
+        .choosed-item:hover {
+            color: #009688;
+            border: 1px solid #009688;
+        }
+
+        .choosed-item i {
+            cursor: pointer;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <div class="layui-field-box layui-clear">
+        <div class="layui-choose-left">
+            <div class="layui-choose-left">
+                <div class="layui-collapse" lay-accordion="" id="area"></div>
+                <table class="site-table table-hover  right">
+                    <tbody class="selsect-content1">
+                    <tr>
+                        <td class="select_input-items" id="serverList"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="layui-choose-right">
+            <div class="choosed-title">请选择产品</div>
+            <div class="choosed-content">
+                <form class="layui-form" action="" id="chooseGoods">
+                    <div class="layui-form-item" style="margin-top: 0">
+                        <input type="checkbox" name="" title="选择全部（注：选择该选项，该优惠券将开放给所有产品）" lay-skin="primary">
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <input type="text" name="keywords" lay-verify="" placeholder=" 请输入关键字" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-input-inline" style="width: 50px">
+                            <button class="layui-btn">搜索</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <span id="items-list1"></span>
+                        <span id="items-list2"></span>
+                        <span id="items-list3"></span>
+                    </div>
+                    <div class="admin-table-page" style="display: none">
+                        <div id="page1" class="page"></div>
+                        <div id="page2" class="page"></div>
+                        <div id="page3" class="page"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn">保存</button>
+                <button class="layui-btn">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="orderHandle1" type="text/html">
+    {{# layui.each(d.datalist, function(index, item){ }}
+    <input type="checkbox" name="{{item.id}},0" tags="0" title="{{item.title}}" lay-skin="primary">
+    {{# }); }}
+</script>
+<script id="orderHandle2" type="text/html">
+    {{# layui.each(d.datalist, function(index, item){ }}
+    <input type="checkbox" name="{{item.id}},1" tags="1" title="{{item.title}}" lay-skin="primary">
+    {{# }); }}
+</script>
+<script id="orderHandle3" type="text/html">
+    {{# layui.each(d.datalist, function(index, item){ }}
+    <input type="checkbox" name="{{item.id}},2" tags="2" title="{{item.title}}" lay-skin="primary">
+    {{# }); }}
+</script>
+<script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+<script type="text/javascript" src="../../js/config.js"></script>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common', 'formInStorage'], function () {
+        var form = layui.form(),
+                layer = layui.layer,
+                layedit = layui.layedit,
+                laydate = layui.laydate,
+                $ = layui.jquery,
+                laytpl = layui.laytpl,
+                element = layui.element(), //Tab的切换功能，切换事件监听等，需要依赖element模块
+                laypage = layui.laypage,
+                common = layui.common,
+                formInStorage = layui.formInStorage,
+                apiUrl = common.apiUrl,
+                editIndex = layedit.build('LAY_demo_editor'), //创建一个编辑器
+                orderID = common.getUrlParam("id"),
+                layer = layui.layer;
+        //common.init();
+        // common.saveTabIndex('attrManage');
+        // common.layTime(); //时间选择
+
+        //区域列表
+        var dataArr = {"id": 0};
+        var areaBig = common.getJsonData('api/bossApi/service/areaSearch', '', dataArr);
+        $.each(areaBig.datalist, function (index, item) {
+            $("#area").append('<div class="layui-colla-item"><h2 class="layui-colla-title" id="' + item.areaid + '">' + item.areaname + '</h2><div class="layui-colla-content"><ul id="areasmall' + item.areacode + '"></ul></div></div>');
+            if (index == 0) {
+                $(".layui-colla-content").addClass("layui-show");
+            }
+            var dataArr = {"id": item.areacode};
+            var areaSmall = common.getJsonData('api/bossApi/service/areaSearch', '', dataArr);
+            for (var i = 0; i < areaSmall.datalist.length; i++) {
+                $("#areasmall" + item.areacode).append('<li class="smallitem" id="' + areaSmall.datalist[i].areaid + '">' + areaSmall.datalist[i].areaname + '</li>');
+            }
+        });
+        itemStyle();//给右侧选项卡定义样式
+
+        //默认查询服务 -> 服务大类
+        var APIserviceTypeList = "api/bossApi/service/serviceTypeList";
+        var getServiceTypeList = common.getJsonData(APIserviceTypeList, '', '');
+        $("#serverList").html("");
+        $.each(getServiceTypeList.datalist, function (index, item) {
+            $("#serverList").append('<h2 class="self-input" queryServerListID="' + item.id + '"><i class="layui-icon self-cursor" data-icon="&#xe602;">&#xe602;</i> ' + item.title + '</h2>');
+        });
+        itemStyle();//给右侧选项卡定义样式
+
+        //右侧样式（服务大类…）
+        function itemStyle() {
+            $(".selected-input").find(".layui-input").css({
+                'border': '0',
+                'background-color': '#f1f1f1',
+                'height': '34px',
+                'text-align': 'center'
+            });
+            $(".selsect-content0 tr, .selsect-content1 tr, .selsect-content2 tr").find("h2:even").css("background", "#ffffff");
+            $(".selsect-content0 tr, .selsect-content1 tr, .selsect-content2 tr").find("h2:last").css("border", "0");
+        }
+
+
+        getXingzhengData(); //默认加载行政审批
+        getThirdServiceData(); //默认加载第三方服务
+        getBuniessServiceData(); //默认加载企业服务
+        form.render();
+        //行政审批列表
+        function getXingzhengData() {
+            var dataArr = {"page": 1};
+            common.getJsonData('api/bossApi/service/approvalList', 1, dataArr);
+        }
+
+        //第三方服务列表
+        function getThirdServiceData() {
+            var dataArr = {"page": 1};
+            common.getJsonData('api/bossApi/service/thirdServiceList', 2, dataArr);
+        }
+
+        //企业服务列表
+        function getBuniessServiceData() {
+            var dataArr = {"page": 1};
+            common.getJsonData('api/bossApi/service/businessServiceList', 3, dataArr);
+        }
+
+        var goodsIds = '';
+        form.on('checkbox', function (data) {
+            if (data.elem.checked) {
+                goodsIds += data.elem.name + '/';
+            } else {
+                for (var i = 0; i < goodsIds.length; i++) {
+                    if (goodsIds[i] === data.elem.name) {
+                        goodsIds.splice(i, 1)
+                    }
+                }
+            }
+            localStorage.setItem('productdata', goodsIds.substring(0, goodsIds.length - 1));
+        });
+
+        $(document).on('click', '.layui-btn', function () {
+            parent.layer.closeAll(); //关闭浮窗
+        })
+
+
+    });
+</script>
+</body>
+</html>

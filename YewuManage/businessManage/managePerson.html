@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>添加事项</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all" />
+        <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../../css/global.css" media="all">
+    </head>
+    <body>
+        <div style="margin: 15px;">
+            <fieldset class="layui-elem-field">
+                <legend>员工管理</legend>
+                <div class="layui-field-box">
+                    <blockquote class="layui-elem-quote">
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item self-layui-form-item">
+                                <label class="layui-form-label" style="width:auto;">性别</label>
+                                <div class="layui-input-inline" style="width:150px">
+                                    <select name="zhuti">
+                                        <option value="">—— 请选择 ——</option>
+                                        <option value="0">男</option>
+                                        <option value="1">女</option>
+                                    </select>
+                                </div>
+                                <label class="layui-form-label">选择时间</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" placeholder="开始日" id="LAY_demorange_s" name="begintime">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" placeholder="截止日" id="LAY_demorange_e" name="endtime">
+                                </div>
+                                <label class="layui-form-label" style="width:auto;">姓名</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入姓名" class="layui-input">
+                                </div>
+                                <button class="layui-btn" lay-submit="" lay-filter="sear" style="margin-left: 40px">搜索</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            </div>
+                        </form>
+                    </blockquote>
+                    <a href="addperson.html" class="layui-btn"><i class="layui-icon"></i>&nbsp;新建</a>
+                    <div>
+                        <table class="site-table self-site-table table-hover left">
+                            <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>用户名</th>
+                                    <th>姓名</th>
+                                    <th>性别</th>
+                                    <th>电话</th>
+                                    <th>加入日期</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="items-list1"></tbody>
+                        </table>
+                        <table class="site-table table-hover selected-css right">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <i class="fa fa-user-o" aria-hidden="true"></i> 员工角色
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="selsect-content">
+                                <tr>
+                                    <td class="select_input-items">
+                                        <h2 class="self-input" value="0"><i class="layui-icon self-cursor" data-icon="&#xe602;">&#xe602;</i> 主管</h2>
+                                        <h2 class="self-input" value="1"><i class="layui-icon self-cursor" data-icon="&#xe602;">&#xe602;</i> 专员</h2>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="admin-table-page"><div id="page1" class="page"></div></div>
+                </div>
+            </fieldset>
+        </div>
+        <a href="javascript:history.go(-1);" class="return-go"><i class="fa fa-reply" data-icon="fa-reply" aria-hidden="true"></i> 返回</a>
+           <!---行政审批-->
+        <script id="orderHandle1" type="text/html">
+            {{#  layui.each(d.datalist, function(index, item){ }}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>回良玉</td>
+            <td title="{{ item.title }}">{{ item.title.length>18?item.title.substring(0, 18)+ "...":item.title }}</td>
+            <td>男</td>
+            <td>13566489555</td>
+            <td>2017.03.01</td>
+            <td>
+                <span class="layui-breadcrumb" lay-separator=" ">
+                    <a href="../businessManage/personDetail.html?id={{ item.id }}" title="详情"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
+                    <a href="../businessManage/addPerson.html?id={{ item.id }}" title="编辑"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                    <a  href="javascript:;" title="删除" onclick="del({{ item.id }})"><i class="layui-icon self-cursor" data-icon="&#x1006;">&#x1006;</i></a>
+                    <!-- <a href="../serviceItems/downLine.html?id=73" title="下线" onclick="downline({{ item.id }})"><i class="layui-icon" data-icon="&#xe601;">&#xe601;</i></a>-->
+                </span>
+            </td>
+        </tr>
+        {{#  }); }}
+    </script>
+        <script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+        <script type="text/javascript" src="../../js/config.js"></script>
+        <script>
+
+        layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common', 'formInStorage'], function () {
+            var form = layui.form(),
+                    layer = layui.layer,
+                    layedit = layui.layedit,
+                    laydate = layui.laydate,
+                    $ = layui.jquery,
+                    laytpl = layui.laytpl,
+                    element = layui.element(), //Tab的切换功能，切换事件监听等，需要依赖element模块
+                    laypage = layui.laypage,
+                    common = layui.common,
+                    formInStorage = layui.formInStorage,
+                    apiUrl = common.apiUrl,
+                    editIndex = layedit.build('LAY_demo_editor'), //创建一个编辑器
+                    serviceIndex = localStorage.getItem('serviceIndex'),
+                    orderID = common.getUrlParam("id"),
+                    itemID = common.getUrlParam("itemid"),//事项id
+                    layer = layui.layer;
+            common.saveTabIndex('serviceIndex');
+            common.init();
+            common.layTime(); //时间选择
+
+            common.saveTabIndex('businessMangeaIndex');
+            //创建一个编辑器
+            var editIndex = layedit.build('LAY_demo_editor');
+
+            //复选框样式
+            $('input').iCheck({
+              checkboxClass: 'icheckbox_flat-green'
+            });
+
+            getJson();
+
+            //点击行政审批的重置
+            $(".reset").on('click', function () {
+                getJson();
+            });
+
+            //角色管理
+            function getJson(){
+                for(var i = 0; i < 2; i++) {
+                    var dataArr = {"page": 1,"businesstype":i};
+                    common.getJsonData(' api/bossApi/role/StaffSearch', i+1, dataArr)
+                }
+            }
+
+            //搜索行政审批
+            form.on('submit(searxingzheng)', function(data) {
+                  var dataArr = {
+                          "page": 1,
+                          "keywords":data.field.keyword,
+                          "businesstype":0,
+                          "businessstatus":data.field.businessstatus
+                       }
+                  common.getJsonData('api/bossApi/businessMain/businessMainSearch',1, dataArr)
+            });
+
+            //搜索服务商
+            form.on('submit(searfuwu)', function(data) {
+                  var dataArr = {
+                          "page": 1,
+                          "keywords":data.field.keyword,
+                          "businesstype":1,
+                          "businessstatus":data.field.businessstatus
+                       }
+                  common.getJsonData('api/bossApi/businessMain/businessMainSearch',2, dataArr)
+                  console.log(dataArr);
+                  return false;
+            });
+
+            //上线和下线（“0”下线的状态，“1”上线的状态），添加热门和取消热门（“0”不热，“1”已热）
+            $(document).on('click','.approvalSet',function(){
+              var orderID = $(this).attr("orderid");
+              var status = $(this).attr("status");
+              var APIname = "api/bossApi/businessMain/businessMainOnline";
+              if(status==0){
+                var dataArr = {"businessId": orderID,"isonline":true};
+              }else{
+                var dataArr = {"businessId": orderID,"isonline":false};
+              }
+              var getJSON = common.getJsonData(APIname, '', dataArr);
+              //console.log(getJSON);
+              //return false;
+              if(getJSON["code"] == 1){
+                  layer.msg('操作成功', {icon:1, time:1500},function(){
+                    window.location.reload();
+                  });
+              }else{
+                  layer.msg(getJSON["msg"], {icon:2, time:1500},function(){
+                    window.location.reload();
+                  });
+              }
+            });
+
+
+
+
+
+          });
+        </script>
+    </body>
+</html>

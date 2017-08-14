@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all" />
+  <link rel="stylesheet" href="css/global.css" media="all">
+  <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    body {
+      background: #f1f1f1;
+    }
+
+    .layui-preview-box {
+      margin: 0 auto;
+      padding: 20px;
+      width: 700px;
+      background: #fff;
+    }
+
+    .layui-preview-box h1 {
+      margin: 10px 0;
+      font-size: 26px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .layui-preview-box .date {
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 16px;
+      color: #666;
+    }
+
+    .layui-preview-box .poster {
+      margin-bottom: 10px;
+      width: 100%;
+      height: auto;
+    }
+
+    .layui-preview-box p {
+      margin-bottom: 10px;
+      text-indent: 2em;
+      line-height: 2;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layui-preview-box">
+    <h1>微信浏览器全面升级至X5 Blink内核，支持远程调试</h1>
+    <h4 class="date">2012-12-12</h4>
+    <img class="poster" src="https://cdn.dribbble.com/users/1497886/screenshots/3500022/westfalyeah_dribbble_800x600_41.jpg" alt="">
+    <div class="content">
+      <p>微信安卓版客户端 webview 即日起100%放量，全面升级至 X5 Blink 内核，将具有更好的 HTML5/CSS3 支持，更强大的渲染能力。</p>
+      <p>为此，微信 web 开发者工具同步推出0.5.0版本，继支持测试号、企业号、第三方平台开发者的使用之后，新增支持实时映射手机屏幕到 PC 或者 Mac 上，可以远程调试 X5 Blink 内核上的网页。</p>
+      <p>近期，平台发现有用户利用微信关系链，通过微信公众帐号实施多级分销欺诈行为，发布分销信息诱导用户进行关注、分享或直接参与。此模式多数包装为新型商业模式、创新金融产品、互助扶贫、国家帮扶计划等，本质在于利用关系链发展人员，形成多级上下线关系，按照下线人数或者销售业绩计算盈利，与传销行为类似，一定程度上具有金字塔欺诈、庞氏骗局等特征。</p>
+    </div>
+  </div>
+  <script id="ordersHandle1" type="text/html">
+    {{# }); }}
+  </script>
+  <script type="text/javascript" src="./plugins/layui/layui.js"></script>
+  <script type="text/javascript" src="./js/config.js"></script>
+  <script>
+    layui.config({
+      base: 'plugins/layui/lay/modules/',
+      version: new Date().getTime()
+    }).use(['element', 'layer', 'laytpl'], function() {
+      var form = layui.form(),
+        $ = layui.jquery,
+        laytpl = layui.laytpl,
+        element = layui.element(),
+        laypage = layui.laypage,
+        layer = layui.layer;
+      var orderData = {};
+
+      function initPage() {
+        //获取数据
+        console.log(orderData)
+        for (var j = 1; j <= 1; j++) {
+          //ajaxFn(j, j);
+          var tplid = 'ordersHandle' + j,
+            viewid = 'items-list' + j;
+          renderTpl(tplid, viewid, orderData);
+        }
+      }
+      //模板渲染
+      function renderTpl(tplid, viewid, data) {
+        var tpl = document.getElementById(tplid),
+          view = document.getElementById(viewid);
+        var getTpl = tpl.innerHTML;
+        laytpl(getTpl).render(data, function(html) {
+          view.innerHTML = html;
+          element.init();
+        });
+      }
+
+      //请求数据
+      function ajaxFn(typeid, num) {
+        $.ajax({
+          url: "http://221.10.2.222:5680/api/wx/News/ListByType/0/" + typeid + "/1",
+          type: "get",
+          dataType: "json",
+          success: function(data) {
+            renderTpl(typeid, data);
+          }
+        });
+      }
+
+      initPage();
+    })
+  </script>
+</body>
+
+</html>

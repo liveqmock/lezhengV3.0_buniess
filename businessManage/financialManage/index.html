@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>财务管理</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="stylesheet" href="../../plugins/layui/css/layui.css" media="all" />
+  <link rel="stylesheet" href="../../css/global.css" media="all">
+  <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="../../css/table.css" />
+  <style>
+    .table-title {
+      height: 50px;
+      line-height: 50px;
+      padding-left: 20px;
+      border: 1px solid #ddd;
+      border-bottom: 0;
+      font-size: 14px;
+    }
+
+    .site-table {
+      margin: 0;
+    }
+
+    .site-text {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="margin: 15px;">
+    <div class="layui-tab layui-tab-card" lay-filter="financeIndex">
+      <ul class="layui-tab-title">
+        <li class="">收款记录</li>
+        <li>结账记录</li>
+      </ul>
+      <div class="layui-tab-content">
+        <!--订单对账-->
+        <div class="layui-tab-item">
+          <div class="admin-main">
+            <blockquote class="layui-elem-quote">
+              <form class="layui-form" action="">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-inline">
+                    <select name="status">
+  												<option value="">—— 请选择 ——</option>
+  												<option value="已置顶">支付宝</option>
+  												<option value="发布中">微信</option>
+  										</select>
+                  </div>
+                  <label class="layui-form-label">时间区间</label>
+                  <div class="layui-input-inline" style="width: 90px;">
+                    <input class="layui-input" placeholder="开始日" id="LAY_demorange_s1">
+                  </div>
+                  <div class="layui-input-inline" style="width: 90px;">
+                    <input class="layui-input" placeholder="截止日" id="LAY_demorange_e1">
+                  </div>
+                  <label class="layui-form-label">金额区间</label>
+                  <div class="layui-input-inline" style="width: 82px;">
+                    <input type="text" name="price_min" placeholder="￥" autocomplete="off" class="layui-input">
+                  </div>
+                  <div class="layui-form-mid">-</div>
+                  <div class="layui-input-inline" style="width: 82px;">
+                    <input type="text" name="price_max" placeholder="￥" autocomplete="off" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">订单名称</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                  </div>
+                  <button class="layui-btn layui-btn-warm" lay-submit="" lay-filter="sear">搜索</button>
+                </div>
+              </form>
+            </blockquote>
+          </div>
+          <div class="layui-field-box">
+            <div class="table-title">收款记录</div>
+            <table class="site-table table-hover">
+              <thead>
+                <tr>
+                  <th>流水号</th>
+                  <th>金额</th>
+                  <th>时间</th>
+                  <th>订单名称</th>
+                  <th>下单人</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="items-list1"></tbody>
+            </table>
+            <div class="admin-table-page">
+              <div id="page1" class="page"></div>
+            </div>
+          </div>
+        </div>
+        <!--商家对账-->
+        <div class="layui-tab-item">
+          <div class="admin-main">
+            <blockquote class="layui-elem-quote">
+              <form class="layui-form" action="">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">状态</label>
+                  <div class="layui-input-inline">
+                    <select name="status">
+												<option value="">—— 请选择 ——</option>
+												<option value="已置顶">已置顶</option>
+												<option value="发布中">发布中</option>
+												<option value="被关闭">被关闭</option>
+										</select>
+                  </div>
+                  <label class="layui-form-label">时间区间</label>
+                  <div class="layui-input-inline">
+                    <input class="layui-input" placeholder="开始日" id="LAY_demorange_s2">
+                  </div>
+                  <div class="layui-input-inline">
+                    <input class="layui-input" placeholder="截止日" id="LAY_demorange_e2">
+                  </div>
+                </div>
+                <div class="layui-form-item">
+                  <label class="layui-form-label">金额区间</label>
+                  <div class="layui-input-inline" style="width: 82px;">
+                    <input type="text" name="price_min" placeholder="￥" autocomplete="off" class="layui-input">
+                  </div>
+                  <div class="layui-form-mid">-</div>
+                  <div class="layui-input-inline" style="width: 82px;">
+                    <input type="text" name="price_max" placeholder="￥" autocomplete="off" class="layui-input">
+                  </div>
+                  <label class="layui-form-label">订单名称</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入商家" class="layui-input">
+                  </div>
+                  <button class="layui-btn layui-btn-warm" lay-submit="" lay-filter="sear">搜索</button>
+                </div>
+              </form>
+            </blockquote>
+          </div>
+          <div class="layui-field-box">
+            <table class="site-table table-hover">
+              <thead>
+                <tr>
+                  <th>流水号</th>
+                  <th>金额</th>
+                  <th>时间</th>
+                  <th>订单名称</th>
+                  <th>下单人</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="items-list2"></tbody>
+            </table>
+            <div class="admin-table-page">
+              <div id="page2" class="page"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--订单对账-->
+  <script id="template_1" type="text/html">
+    {{# layui.each(d.datalist, function(index, item){ }}
+    <tr id="order4">
+      <td class="title">{{ item.title }}</td>
+      <td>{{ item.questioner }}</td>
+      <td>{{ item.status }}</td>
+      <td>{{ item.count }}</td>
+      <td>{{ item.sendtime }}</td>
+      <td>{{ item.sendtime }}</td>
+      <td>
+        <span class="layui-breadcrumb" lay-separator="|">
+            <a href="detail.html">详情</a>
+        </span>
+      </td>
+    </tr>
+    {{# }); }}
+  </script>
+  <!--商家对账-->
+  <script id="template_2" type="text/html">
+    {{# layui.each(d.datalist, function(index, item){ }}
+    <tr id="">
+      <td><input type="checkbox" class="input-self" id="{{ item.id }}"><label for="{{ item.id }}"></label></td>
+      <td class="title">{{ item.title }}</td>
+      <td>{{ item.questioner }}</td>
+      <td>{{ item.status }}</td>
+      <td>{{ item.request }}</td>
+      <td>{{ item.sendtime }}</td>
+      <td>
+        <span class="layui-breadcrumb" lay-separator="|">
+						<a href="detail.html">详情</a>
+						<input type="hidden" id="{{item.id}}">
+				</span>
+      </td>
+    </tr>
+    {{# }); }}
+  </script>
+  <script type="text/javascript" src="../../plugins/layui/layui.js"></script>
+  <script type="text/javascript" src="../../js/config.js"></script>
+  <script>
+    layui.use(['form', 'layedit', 'laydate', 'element', 'icheck', 'laypage', 'layer', 'laytpl', 'common'], function() {
+      var form = layui.form(),
+        $ = layui.jquery,
+        laytpl = layui.laytpl,
+        element = layui.element(),
+        laypage = layui.laypage,
+        layer = layui.layer,
+        common = layui.common;
+      common.init();
+      common.saveTabIndex('financeIndex');
+
+      var urlconfig = ["interactionManage/questions", "interactionManage/conversation", "interactionManage/active"];
+
+      //模板渲染
+      function renderTpl(tplid, viewid, data) {
+        var tpl = document.getElementById(tplid),
+          view = document.getElementById(viewid);
+        var getTpl = tpl.innerHTML;
+        laytpl(getTpl).render(data, function(html) {
+          view.innerHTML = html;
+          element.init();
+        });
+      }
+
+      //请求数据
+      function ajaxFn(url, num) {
+        $.ajax({
+          url: "https://www.easy-mock.com/mock/59017cb97a878d73716db25d/lezheng/" + url,
+          type: "get",
+          dataType: "json",
+          success: function(data) {
+            console.log(data);
+            renderTpl('template_' + num, 'items-list' + num, data);
+          }
+        });
+      }
+
+      function initPage() {
+        //分页加载数据
+        $('input').iCheck({
+          checkboxClass: 'icheckbox_flat-green'
+        });
+
+        // 日期选择器
+        var date_start = {
+          min: '2010-01-01 00:00:00',
+          max: '2099-06-16 23:59:59',
+          istoday: false,
+          choose: function(datas) {
+            end.min = datas; //开始日选好后，重置结束日的最小日期
+            end.start = datas //将结束日的初始值设定为开始日
+          }
+        };
+
+        var date_end = {
+          min: laydate.now(),
+          max: '2099-06-16 23:59:59',
+          istoday: false,
+          choose: function(datas) {
+            start.max = datas; //结束日选好后，重置开始日的最大日期
+          }
+        };
+
+        //获取数据
+        for (var j = 1; j <= 2; j++) {
+          ajaxFn(urlconfig[j - 1], j);
+
+          document.getElementById('LAY_demorange_s' + j).onclick = function() {
+            date_start.elem = this;
+            laydate(date_start);
+          };
+          document.getElementById('LAY_demorange_e' + j).onclick = function() {
+            date_end.elem = this;
+            laydate(date_end);
+          };
+        }
+
+        //监听提交
+        form.on('submit(sear)', function(data) {
+          layer.alert(JSON.stringify(data.field));
+          return false;
+        });
+        form.render();
+      }
+
+      //收集表格选中项
+      function collectSelcet(elm) {
+        var btnType = elm.attr('data-type');
+        if (btnType === '0') {
+          var tableID = elm.attr('data-table'),
+            inputs = $('#' + tableID).find('input:checked.input-self'),
+            ids = [];
+          for (var i in inputs) {
+            if (inputs[i].id) {
+              ids.push(inputs[i].id)
+            }
+          }
+          if (ids.length === 0) {
+            return 0;
+          } else {
+            sessionStorage.setItem('tableID', ids);
+            return 1;
+          }
+        } else {
+          var id = elm.parents('tr').find('input').attr('id');
+          sessionStorage.setItem('tableID', id);
+          return 1;
+        }
+      }
+
+      //结账
+      $(document).on('click', '.js_checkout', function() {
+        var flag = collectSelcet($(this));
+        if (flag) {
+          layer.prompt({
+              title: '结账',
+              formType: 2,
+              shadeClose: true
+            },
+            function(content, index) {
+              layer.msg('填写内容' + content);
+              layer.close(index);
+            });
+        } else {
+          layer.msg('至少勾选一个哇！');
+        }
+      });
+
+      initPage();
+    });
+  </script>
+
+</body>
+
+</html>
